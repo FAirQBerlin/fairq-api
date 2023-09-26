@@ -1,0 +1,23 @@
+# linters and caches
+__pycache__
+
+# environment variables
+.env
+
+# vscode
+.vscode/
+
+# pycharm
+.idea/
+*.egg-info/
+develop-eggs
+build/
+develop-eggs/
+dist/
+
+# miscs
+*.log
+*.egg
+*.whl
+*.gz
+*.egg

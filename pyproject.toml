@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fairqApi"
+version = "2023.07.0"
+authors = [
+  { name="Sarah Wagner", email="sarah.wagner@inwt-statistics.de" },
+]
+description = "Future Air Quality API for Predictions."
+readme = "README.md"
+license = { file="closed" }
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "clickhouse_driver",
+    "slowapi",
+    "pytest",
+    "pandas"
+]
+
+[tool.bumpver]
+current_version = "2023.07.0"
+version_pattern = "YYYY.0M.PATCH"
+commit_message = "bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'version = "{version}"',
+]
+
+
