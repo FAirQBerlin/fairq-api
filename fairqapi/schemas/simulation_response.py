@@ -50,6 +50,7 @@ class Properties(BaseModel):
     pm25_90: List[float] = Field(..., alias="pm2.5_90")
     pm25_100: List[float] = Field(..., alias="pm2.5_100")
 
+
 class Feature(BaseModel):
     type: str = "Feature"
     geometry: Geometry

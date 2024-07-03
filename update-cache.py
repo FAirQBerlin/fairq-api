@@ -2,7 +2,6 @@ import datetime
 import sys
 import time
 
-
 from fairqapi.cache.cache_updater import CacheUpdater
 
 

@@ -5,8 +5,8 @@ from logging.config import dictConfig
 from fastapi import APIRouter
 
 from fairqapi.cache.cache import cache
-from fairqapi.schemas.stations_response import StationsResponse
 from fairqapi.logging_config.logger_config import get_logger_config
+from fairqapi.schemas.stations_response import StationsResponse
 
 dictConfig(get_logger_config())
 

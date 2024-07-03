@@ -1,5 +1,4 @@
 """Response model for streets endpoint."""
-
 from datetime import datetime
 from typing import List
 
@@ -8,14 +7,13 @@ from pydantic import BaseModel, Field
 
 class Geometry(BaseModel):
     type: str = "LineString"
-    coordinates: List[List[float]]  # weiter eingrenzbar?
+    coordinates: List[List[float]]
     crs: str = "EPSG:25833"
-
 
 class Properties(BaseModel):
     element_nr: str
     date_time_forecast_iso8601: datetime
-    forecast_range_iso8601: str  # weiter eingrenzbar?
+    forecast_range_iso8601: str
     no2: List[float]
     pm10: List[float]
     pm2_5: List[float] = Field(..., alias="pm2.5")
