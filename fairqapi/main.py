@@ -1,11 +1,11 @@
 """This module contains the fastAPI serving the different endpoints to the customer."""
 import asyncio
-import configparser
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from starlette_prometheus import PrometheusMiddleware, metrics
 
+from fairqapi import __version__
 from fairqapi.cache.cache import cache
 from fairqapi.routers import (  # noqa: WPS300
     grid,
@@ -29,9 +29,7 @@ async def lifespan(app: FastAPI):
 
 
 def get_version():
-    config = configparser.ConfigParser()
-    config.read(".bumpversion.cfg")
-    return config["bumpversion"]["current_version"]
+    return __version__
 
 
 description = """
@@ -39,7 +37,7 @@ FAirQ API 🚀
 
 ## stations
 
-get prediction of no2, pm10 & pm2.5 for all  measuringstation 
+get prediction of no2, pm10 & pm2.5 for all  measuringstation
 
 ## streets
 
