@@ -1,5 +1,6 @@
 """This module contains the fastAPI serving the different endpoints to the customer."""
 import asyncio
+import configparser
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -27,7 +28,45 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(lifespan=lifespan)
+def get_version():
+    config = configparser.ConfigParser()
+    config.read(".bumpversion.cfg")
+    return config["bumpversion"]["current_version"]
+
+
+description = """
+FAirQ API 🚀
+
+## stations
+
+get prediction of no2, pm10 & pm2.5 for all  measuringstation 
+
+## streets
+
+get prediction of no2, pm10 & pm2.5 on street level
+
+## grid
+
+get prediction of no2, pm10 & pm2.5 on grid level
+
+## lor
+
+get prediction of no2, pm10 & pm2.5 for the "Lebensweltlich
+orientierte Räume" (LOR)
+
+## simulation
+
+Get predictions of no2, pm10 and pm2.5 for simulated (reduced) kfz per hour in selected streets.
+"""
+
+app = FastAPI(
+    title="FAirQ API",
+    description=description,
+    version=get_version(),
+    # license_info,
+    # contact,
+    lifespan=lifespan
+)
 
 app.add_middleware(PrometheusMiddleware)
 app.add_route("/metrics/", metrics)

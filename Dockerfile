@@ -9,6 +9,7 @@ WORKDIR /usr/src/app
 
 COPY . .
 
+
 # install required packages into the pip environment of the docker container (--system)
 RUN set -ex && pipenv install --deploy --system
 
