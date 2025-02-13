@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from starlette_prometheus import PrometheusMiddleware, metrics
+import pkgutil
 
 from fairqapi import __version__
 from fairqapi.cache.cache import cache
@@ -32,38 +33,22 @@ def get_version():
     return __version__
 
 
-description = """
-FAirQ API 🚀
-
-## stations
-
-get prediction of no2, pm10 & pm2.5 for all  measuringstation
-
-## streets
-
-get prediction of no2, pm10 & pm2.5 on street level
-
-## grid
-
-get prediction of no2, pm10 & pm2.5 on grid level
-
-## lor
-
-get prediction of no2, pm10 & pm2.5 for the "Lebensweltlich
-orientierte Räume" (LOR)
-
-## simulation
-
-Get predictions of no2, pm10 and pm2.5 for simulated (reduced) kfz per hour in selected streets.
-"""
+description = pkgutil.get_data("fairqapi", "api_description.md").decode("utf-8")
 
 app = FastAPI(
-    title="FAirQ API",
+    title="Forecasting Air Quality: FAirQ API 🍃",
     description=description,
     version=get_version(),
-    # license_info,
-    # contact,
-    lifespan=lifespan
+    license_info={
+        "name": "DL-DE BY-2.0",
+        "url": "https://www.govdata.de/dl-de/by-2-0",
+    },
+    contact={
+        "name": "inwt",
+        "url": "https://www.inwt-statistics.com/",
+        "email": "fairq@inwt-statistics.de",
+    },
+    lifespan=lifespan,
 )
 
 app.add_middleware(PrometheusMiddleware)
