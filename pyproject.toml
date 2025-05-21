@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fairqApi"
-version = "2025.02.0"
+version = "2025.04.0"
 authors = [
   { name="Sarah Wagner", email="sarah.wagner@inwt-statistics.de" },
 ]
@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [tool.bumpver]
-current_version = "2025.02.0"
+current_version = "2025.04.0"
 version_pattern = "YYYY.0M.PATCH"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true
@@ -33,5 +33,4 @@ push = true
     'version = "{version}"',
 ]
 "fairqapi/__init__.py" = ['__version__ = "{version}"']
-
 
