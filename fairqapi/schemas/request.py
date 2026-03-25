@@ -1,4 +1,5 @@
 """Request model for streets & grid endpoints."""
+
 from fastapi import Query
 from pydantic import BaseModel
 

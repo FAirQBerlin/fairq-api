@@ -1,14 +1,15 @@
 """This module contains the fastAPI serving the different endpoints to the customer."""
+
 import asyncio
 from contextlib import asynccontextmanager
+from importlib import resources
 
 from fastapi import FastAPI
 from starlette_prometheus import PrometheusMiddleware, metrics
-import pkgutil
 
 from fairqapi import __version__
 from fairqapi.cache.cache import cache
-from fairqapi.routers import (  # noqa: WPS300
+from fairqapi.routers import (
     grid,
     health_check,
     lor,
@@ -17,15 +18,19 @@ from fairqapi.routers import (  # noqa: WPS300
     streets,
 )
 
+background_tasks = set()
+
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_app: FastAPI):
     """
     Start a coroutine which checks every minute if
     an update to the cache is necessary.
     """
     loop = asyncio.get_event_loop()
-    loop.create_task(cache.load_cache_files_loop())
+    task = loop.create_task(cache.load_cache_files_loop())
+    background_tasks.add(task)
+    task.add_done_callback(background_tasks.discard)
     yield
 
 
@@ -33,7 +38,7 @@ def get_version():
     return __version__
 
 
-description = pkgutil.get_data("fairqapi", "api_description.md").decode("utf-8")
+description = resources.files("fairqapi").joinpath("api_description.md").read_text(encoding="utf-8")
 
 app = FastAPI(
     title="Forecasting Air Quality: FAirQ API 🍃",

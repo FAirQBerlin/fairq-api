@@ -1,6 +1,7 @@
 import logging
 import pickle
 from logging.config import dictConfig
+from pathlib import Path
 
 from fairqapi.db.db_connect import db_connect
 from fairqapi.internal.data_utils import get_property_cols, transform_raw_data
@@ -8,9 +9,10 @@ from fairqapi.internal.json_utils import df_to_geojson
 from fairqapi.logging_config.logger_config import get_logger_config
 
 dictConfig(get_logger_config())
+logger = logging.getLogger(__name__)
 
 
-class CacheUpdater():
+class CacheUpdater:
     """
     This class updates the cache files with data from the clickhouse database
     """
@@ -25,24 +27,24 @@ class CacheUpdater():
         is defined by self.cache_invalidation_time
         """
 
-        logging.info("Updating stations")
+        logger.info("Updating stations")
         self.update_stations_file()
 
-        logging.info("Updating grid")
+        logger.info("Updating grid")
         self.update_grid_file()
 
-        logging.info("Updating streets")
+        logger.info("Updating streets")
         self.update_streets_file()
 
-        logging.info("Updating LOR")
+        logger.info("Updating LOR")
         self.update_lor_file()
 
-        logging.info("Updating simulation")
+        logger.info("Updating simulation")
         self.update_simulation_file()
 
     @staticmethod
     def save_cache_file(data, filename):
-        with open(f"cache/{filename}.pickle", "wb") as handle:
+        with Path(f"cache/{filename}.pickle").open("wb") as handle:
             pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     def update_stations_file(self):
@@ -109,9 +111,7 @@ class CacheUpdater():
     def update_simulation_file(self):
         """get data for simulation endpoint"""
         with db_connect() as db:
-            simulation_df_raw = db.query_dataframe(
-                "select * from api_simulation final;"
-            )
+            simulation_df_raw = db.query_dataframe("select * from api_simulation final;")
         simulation_df_raw.sort_values(by=["date_time_forecast", "element_nr"], inplace=True)
         simulation_df = transform_raw_data(simulation_df_raw, endpoint="simulation", forecast_interval_in_hours=24)
 

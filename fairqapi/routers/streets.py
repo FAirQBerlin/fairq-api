@@ -2,6 +2,7 @@
 
 import logging
 from logging.config import dictConfig
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
@@ -11,16 +12,17 @@ from fairqapi.schemas.request import Request
 from fairqapi.schemas.streets_response import StreetsResponse
 
 dictConfig(get_logger_config())
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
 
 @router.get("/streets", response_model=StreetsResponse)
-async def streets(request: Request = Depends()):
+async def streets(request: Annotated[Request, Depends()]):
     """Streets endpoint."""
     streets_out = {
         "type": "FeatureCollection",
-        "features": cache.streets["features"][request.skip:(request.skip + request.limit)]
+        "features": cache.streets["features"][request.skip : (request.skip + request.limit)],
     }
-    logging.info("access streets")
+    logger.info("access streets")
     return streets_out

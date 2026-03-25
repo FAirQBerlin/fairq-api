@@ -35,11 +35,19 @@
             "encoding": "utf8"
         }
     },
+
     "root": {
         "level": "INFO",
         "handlers": [
             "console",
             "info_file_handler"
         ]
+    },
+    "loggers": {
+        "fairqapi": {
+            "level": "INFO",
+            "handlers": ["console"],
+            "propagate": false
+        }
     }
 }

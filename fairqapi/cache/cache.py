@@ -1,16 +1,18 @@
 import asyncio
 import logging
-import os
 import pickle
 import time
 import traceback
 from logging.config import dictConfig
+from pathlib import Path
 
 from fairqapi.logging_config.logger_config import get_logger_config
 
 dictConfig(get_logger_config())
+logger = logging.getLogger(__name__)
 
-class Cache():
+
+class Cache:
     """
     This class contains the cached values for all endpoints. It also
     contains functionality to update the cached values if the files in the storage
@@ -26,49 +28,44 @@ class Cache():
         self.simulation = None
         self.load_cache_files()
 
-
     def load_cache_files(self):
-        logging.info("Loading cached files into memory")
+        logger.info("Loading cached files into memory")
 
         if self.update_needed("stations"):
-            logging.debug("Updating stations")
+            logger.debug("Updating stations")
             self.stations = self.load_stations()
         else:
-            logging.debug("No update needed for stations")
+            logger.debug("No update needed for stations")
 
         if self.update_needed("grid"):
-            logging.debug("Updating grid")
+            logger.debug("Updating grid")
             self.grid = self.load_grid()
         else:
-            logging.debug("No update needed for grid")
+            logger.debug("No update needed for grid")
 
         if self.update_needed("streets"):
-            logging.debug("Updating streets")
+            logger.debug("Updating streets")
             self.streets = self.load_streets()
         else:
-            logging.debug("No update needed for streets")
+            logger.debug("No update needed for streets")
 
         if self.update_needed("lor"):
-            logging.debug("Updating LOR")
+            logger.debug("Updating LOR")
             self.lor = self.load_lor()
         else:
-            logging.debug("No update needed for LOR")
+            logger.debug("No update needed for LOR")
 
         if self.update_needed("simulation"):
-            logging.debug("Updating simulation")
+            logger.debug("Updating simulation")
             self.simulation = self.load_simulation()
         else:
-            logging.debug("No update needed for simulation")
+            logger.debug("No update needed for simulation")
 
         self.last_cache_update = time.time()
 
     def cache_is_loaded(self):
         return (
-            self.streets is not None and
-            self.grid is not None and
-            self.stations is not None and
-            self.lor is not None and
-            self.simulation is not None
+            self.streets is not None and self.grid is not None and self.stations is not None and self.lor is not None and self.simulation is not None
         )
 
     async def load_cache_files_loop(self):
@@ -80,17 +77,16 @@ class Cache():
                 await asyncio.sleep(60)
 
                 self.load_cache_files()
-            except Exception as e:
-                logging.error("Something went wrong when loading cache files")
-                logging.error(traceback.format_exc())
-                logging.info("Retrying ...")
+            except Exception:
+                logger.exception("Something went wrong when loading cache files")
+                logger.exception(traceback.format_exc())
+                logger.info("Retrying ...")
 
     def update_needed(self, filename):
         """
         check if file was modified since last cache update
         """
-        last_modification = os.path.getmtime(f"cache/{filename}.pickle")
-
+        last_modification = Path(f"cache/{filename}.pickle").stat().st_mtime
         return last_modification > self.last_cache_update
 
     def load_stations(self):
@@ -110,8 +106,8 @@ class Cache():
 
     @staticmethod
     def load_cache_file(filename):
-        with open(f"cache/{filename}.pickle", "rb") as handle:
-           return pickle.load(handle)
+        with Path(f"cache/{filename}.pickle").open("rb") as handle:
+            return pickle.load(handle)  # noqa: S301
 
 
 # initialize cache to be used everywhere

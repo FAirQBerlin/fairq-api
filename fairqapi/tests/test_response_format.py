@@ -1,4 +1,6 @@
-"""Testing for some response fields. This is not done in Pydantic because the API behaviour should not be influenced by a failure in the schema validation for these specific fields."""
+"""Testing for some response fields.
+This is not done in Pydantic because the API behaviour should not be influenced
+by a failure in the schema validation for these specific fields."""
 
 from fastapi.testclient import TestClient
 
@@ -64,4 +66,3 @@ def test_grid_fields():
     # assert
     assert validate_datetime_in_response(response_json)
     assert validate_forecast_range_in_response(response_json)
-

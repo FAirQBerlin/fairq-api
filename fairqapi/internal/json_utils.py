@@ -1,4 +1,5 @@
 """Internal json helper functions."""
+
 import ast
 
 
@@ -20,27 +21,31 @@ def df_to_geojson(df, properties, geometry_type="Point"):
         }
 
         if geometry_type == "Point":
-            if not row.index.isin(["x", "y"]).sum() == 2:
-                raise ValueError("Point coordinates 'x' and/or 'y' are missing in df")
+            if row.index.isin(["x", "y"]).sum() != 2:
+                msg = "Point coordinates 'x' and/or 'y' are missing in df"
+                raise ValueError(msg)
             feature["geometry"]["type"] = "Point"
             feature["geometry"]["coordinates"] = [row["x"], row["y"]]
 
         elif geometry_type == "LineString":
             geometry = dict(ast.literal_eval(row["geometry"]))
             if geometry["type"] != "LineString":
-                raise ValueError("Geometry type in df is not 'LineString', but {}.".format(geometry["type"]))
+                msg = f"Geometry type in df is not 'LineString', but {geometry['type']}."
+                raise ValueError(msg)
             feature["geometry"]["type"] = geometry["type"]
             feature["geometry"]["coordinates"] = geometry["coordinates"]
 
         elif geometry_type == "MultiPolygon":
             geometry = dict(ast.literal_eval(row["geometry"]))
             if geometry["type"] != "MultiPolygon":
-                raise ValueError("Geometry type in df is not 'MultiPolygon', but {}.".format(geometry["type"]))
+                msg = f"Geometry type in df is not 'MultiPolygon', but {geometry['type']}."
+                raise ValueError(msg)
             feature["geometry"]["type"] = geometry["type"]
             feature["geometry"]["coordinates"] = geometry["coordinates"]
 
         else:
-            raise ValueError("Geometry type can only be 'Point' or 'LineString'.")
+            msg = "Geometry type can only be 'Point' or 'LineString'."
+            raise ValueError(msg)
 
         for prop in properties:
             feature["properties"][prop] = row[prop]

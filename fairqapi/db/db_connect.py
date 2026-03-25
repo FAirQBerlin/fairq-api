@@ -1,8 +1,9 @@
 """This module contains utility functions needed for connecting to the clickhouse database."""
+
 import logging
 import os
 
-from clickhouse_driver import Client
+from clickhouse_driver import Client  # type: ignore[import-untyped]
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,5 +25,6 @@ def db_connect() -> Client:
         password=os.getenv("DB_PASSWORD"),
         secure=True,
         verify=True,
+        ca_certs="certificates/INWT-IPA-CA.pem",
         settings={"use_numpy": True},
     )

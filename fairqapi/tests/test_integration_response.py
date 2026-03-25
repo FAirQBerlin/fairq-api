@@ -78,6 +78,7 @@ def test_grid_response_limit():
     assert response.encoding == "utf-8"
     assert len(response.json()["features"]) == 10
 
+
 def test_lor_response_limit():
     """Test lor endpoint response with limit."""
     # act
@@ -87,6 +88,7 @@ def test_lor_response_limit():
     assert response.status_code == 200
     assert response.encoding == "utf-8"
     assert len(response.json()["features"]) == 10
+
 
 def test_simulation_response_limit():
     """Test simulation endpoint response with limit."""

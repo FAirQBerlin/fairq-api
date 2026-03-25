@@ -2,6 +2,7 @@
 
 import logging
 from logging.config import dictConfig
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
@@ -11,16 +12,17 @@ from fairqapi.schemas.lor_response import LorResponse
 from fairqapi.schemas.request import Request
 
 dictConfig(get_logger_config())
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
 
 @router.get("/lor", response_model=LorResponse)
-async def lor(request: Request = Depends()):
+async def lor(request: Annotated[Request, Depends()]):
     """LOR (LebensOrientierte Räume) endpoint."""
     lor_out = {
         "type": "FeatureCollection",
-        "features": cache.lor["features"][request.skip:(request.skip + request.limit)]
+        "features": cache.lor["features"][request.skip : (request.skip + request.limit)],
     }
-    logging.info("access lor")
+    logger.info("access lor")
     return lor_out

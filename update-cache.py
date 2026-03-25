@@ -5,7 +5,7 @@ import time
 from fairqapi.cache.cache_updater import CacheUpdater
 
 
-def main(loop=False):
+def main(*, loop=False):
     """
     This function updates pickle files with data from clickhouse db.
     The API uses the data from pickle files to prevent too many requests
@@ -13,16 +13,16 @@ def main(loop=False):
     """
 
     cache_updater = CacheUpdater()
-    
+
     if loop:
         while True:
-            now = datetime.datetime.now()
+            now = datetime.datetime.now(tz=datetime.UTC)
 
             # update every 45th minute of every hour
             if now.minute == 45:
                 cache_updater.update_cache_files()
-            
-            now = datetime.datetime.now()
+
+            now = datetime.datetime.now(tz=datetime.UTC)
 
             # sleep until next minute. Add 10 secs to be sure to be in next minute
             time.sleep(60 - now.second + 10)

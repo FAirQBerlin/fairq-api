@@ -10,6 +10,8 @@ from fairqapi.main import app
 
 client = TestClient(app)
 
+logger = logging.getLogger(__name__)
+
 
 def test_health_performance() -> None:
     """Test health endpoint performance."""
@@ -102,17 +104,8 @@ def ping_endpoint(endpoint: str, times: int):
 def assert_timings(endpoint: str, logged_time: list, target_time: float):
     """Assert that the logged times are on average <= the target_time."""
     average_logged_time = round(average(logged_time), 1)
-    log_msg = (
-        "Accessing the {endpoint} endpoint took on average {avg_time} seconds.".format(
-            endpoint=endpoint,
-            avg_time=average_logged_time,
-        ),
-    )
+    log_msg = (f"Accessing the {endpoint} endpoint took on average {average_logged_time} seconds.",)
     if average_logged_time > target_time:
-        error_msg = "{log_msg} Target time is {target_time}s. Logged times: {all_times}".format(
-            log_msg=log_msg,
-            target_time=target_time,
-            all_times=logged_time,
-        )
+        error_msg = f"{log_msg} Target time is {target_time}s. Logged times: {logged_time}"
         raise TimeoutError(error_msg)
-    logging.info(log_msg)
+    logger.info(log_msg)

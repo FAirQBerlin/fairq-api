@@ -1,27 +1,35 @@
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "fairqApi"
-version = "2025.07.1"
-authors = [
-  { name="Sarah Wagner", email="sarah.wagner@inwt-statistics.de" },
-]
+[tool.poetry]
+name = "fairqapi"
+version = "2026.03.0"
 description = "Future Air Quality API for Predictions."
+authors = ["Sarah Wagner <sarah.wagner@inwt-statistics.de>"]
 readme = "README.md"
-license = { file="closed" }
-requires-python = ">=3.10"
-dependencies = [
-    "fastapi",
-    "clickhouse_driver",
-    "slowapi",
-    "pytest",
-    "pandas"
-]
+
+[tool.poetry.dependencies]
+python = ">3.14, <4.0"
+fastapi = {extras = ["standard"], version = "^0.135.1"}
+clickhouse-driver = "^0.2.10"
+slowapi = "^0.1.9"
+pytest = "^9.0.2"
+pandas = "^3.0.1"
+starlette-prometheus = "^0.10.0"
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[dependency-groups]
+[tool.poetry.group.dev.dependencies]
+ruff=">=0.15.6,<0.16.0"
+mypy=">=1.19.1,<2.0.0"
+bumpver = "^2025.1131"
+
 
 [tool.bumpver]
-current_version = "2025.07.1"
+current_version = "2026.03.0"
 version_pattern = "YYYY.0M.PATCH"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true
@@ -34,3 +42,25 @@ push = true
 ]
 "fairqapi/__init__.py" = ['__version__ = "{version}"']
 
+
+[tool.ruff]
+line-length = 150
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["ANN", "COM812", "D", "ISC001",
+   "TC001", # Move third-party import into a type-checking block
+    "TC002", # Move standard library import into a type-checking block
+    "TC003", # Move first-party import into a type-checking block
+]
+per-file-ignores = { "*/test_*.py" = ["S101"] }
+[tool.ruff.lint.flake8-type-checking]
+quote-annotations = true
+
+# might want to fix this in the long run
+[tool.ruff.lint.pylint]
+allow-magic-value-types = ["int", "float","str"]
+
+[tool.mypy]
+ignore_missing_imports = false

@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 
 
@@ -23,14 +22,25 @@ def transform_raw_data(df_raw: pd.DataFrame, endpoint: str, forecast_interval_in
     elif endpoint == "lor":
         df = df.sort_values(["PLR_ID"]).loc[:, ["geometry", *get_property_cols(endpoint)]]
     elif endpoint == "simulation":
-        df = df.rename(columns={"pm25_0": "pm2.5_0","pm25_10": "pm2.5_10", "pm25_20": "pm2.5_20",
-        "pm25_30": "pm2.5_30", "pm25_40": "pm2.5_40", "pm25_50": "pm2.5_50", "pm25_60": "pm2.5_60",
-        "pm25_70": "pm2.5_70", "pm25_80": "pm2.5_80", "pm25_90": "pm2.5_90", "pm25_100": "pm2.5_100"})
+        df = df.rename(
+            columns={
+                "pm25_0": "pm2.5_0",
+                "pm25_10": "pm2.5_10",
+                "pm25_20": "pm2.5_20",
+                "pm25_30": "pm2.5_30",
+                "pm25_40": "pm2.5_40",
+                "pm25_50": "pm2.5_50",
+                "pm25_60": "pm2.5_60",
+                "pm25_70": "pm2.5_70",
+                "pm25_80": "pm2.5_80",
+                "pm25_90": "pm2.5_90",
+                "pm25_100": "pm2.5_100",
+            }
+        )
         df = df.sort_values(["element_nr"]).loc[:, ["geometry", *get_property_cols(endpoint)]]
     else:
-        raise ValueError(
-            "Incorrect endpoint '{}' was given. Possible endpoints are 'stations', 'grid', 'streets', 'lor', 'simulation'".format(endpoint)
-        )
+        msg = f"Incorrect endpoint '{endpoint}' was given. Possible endpoints are 'stations', 'grid', 'streets', 'lor', 'simulation'"
+        raise ValueError(msg)
 
     return df
 
@@ -57,22 +67,21 @@ def add_forecast_range_iso(df: pd.DataFrame, forecast_interval_in_hours: int) ->
     df["forecast_horizon_delta"] = df["last_pred_date_time"] - df["first_pred_date_time"]
 
     # forecast horizon in hours plus 1 to match length of list of pollutant predictions:
-    df["forecast_horizon_h"] = (df["forecast_horizon_delta"] / np.timedelta64(forecast_interval_in_hours, "h")).astype("Int64") + 1
+    df["forecast_horizon_h"] = (df["forecast_horizon_delta"] / pd.Timedelta(hours=forecast_interval_in_hours)).astype("Int64") + 1  # type: ignore[operator]
     df["forecast_horizon_h"] = df["forecast_horizon_h"].astype(str)
 
     df["first_pred_date_time_iso"] = df["first_pred_date_time"].dt.strftime(iso["format"]).astype(str)
     df["forecast_range_" + iso["name"]] = (
         "R" + df["forecast_horizon_h"] + "/" + df["first_pred_date_time_iso"] + "/PT" + str(forecast_interval_in_hours) + "H"
     )
-    df = df.drop(
+
+    return df.drop(
         columns=[
             "forecast_horizon_delta",
             "forecast_horizon_h",
             "first_pred_date_time_iso",
         ]
     )
-
-    return df
 
 
 def add_date_time_forecast_iso(df: pd.DataFrame) -> pd.DataFrame:
@@ -86,9 +95,8 @@ def add_date_time_forecast_iso(df: pd.DataFrame) -> pd.DataFrame:
     iso = get_iso_format()
 
     df["date_time_forecast"] = df["date_time_forecast"].dt.strftime(iso["format"]).astype(str)
-    df = df.rename(columns={"date_time_forecast": "date_time_forecast_" + iso["name"]})
 
-    return df
+    return df.rename(columns={"date_time_forecast": "date_time_forecast_" + iso["name"]})
 
 
 def get_property_cols(endpoint: str) -> list[str]:
@@ -102,9 +110,40 @@ def get_property_cols(endpoint: str) -> list[str]:
     date_time_forecast_iso = "date_time_forecast_" + iso["name"]
     forecast_range_iso = "forecast_range_" + iso["name"]
     pollutants = ["no2", "pm10", "pm2.5"]
-    simulation_columns = ["no2_0", "no2_10", "no2_20", "no2_30", "no2_40", "no2_50", "no2_60", "no2_70", "no2_80", "no2_90", "no2_100",
-                          "pm10_0", "pm10_10", "pm10_20", "pm10_30", "pm10_40", "pm10_50", "pm10_60", "pm10_70", "pm10_80", "pm10_90", "pm10_100",
-                          "pm2.5_0", "pm2.5_10", "pm2.5_20", "pm2.5_30", "pm2.5_40", "pm2.5_50", "pm2.5_60", "pm2.5_70", "pm2.5_80", "pm2.5_90", "pm2.5_100"
+    simulation_columns = [
+        "no2_0",
+        "no2_10",
+        "no2_20",
+        "no2_30",
+        "no2_40",
+        "no2_50",
+        "no2_60",
+        "no2_70",
+        "no2_80",
+        "no2_90",
+        "no2_100",
+        "pm10_0",
+        "pm10_10",
+        "pm10_20",
+        "pm10_30",
+        "pm10_40",
+        "pm10_50",
+        "pm10_60",
+        "pm10_70",
+        "pm10_80",
+        "pm10_90",
+        "pm10_100",
+        "pm2.5_0",
+        "pm2.5_10",
+        "pm2.5_20",
+        "pm2.5_30",
+        "pm2.5_40",
+        "pm2.5_50",
+        "pm2.5_60",
+        "pm2.5_70",
+        "pm2.5_80",
+        "pm2.5_90",
+        "pm2.5_100",
     ]
 
     standard_property_cols = [date_time_forecast_iso, forecast_range_iso, *pollutants]
@@ -118,8 +157,14 @@ def get_property_cols(endpoint: str) -> list[str]:
     elif endpoint == "lor":
         property_cols = ["PLR_ID", *standard_property_cols]
     elif endpoint == "simulation":
-        property_cols = ["element_nr", date_time_forecast_iso, forecast_range_iso, *simulation_columns]
+        property_cols = [
+            "element_nr",
+            date_time_forecast_iso,
+            forecast_range_iso,
+            *simulation_columns,
+        ]
     else:
-        raise ValueError("Incorrect endpoint name {} was given to pick property columns.".format(endpoint))
+        msg = f"Incorrect endpoint name {endpoint} was given to pick property columns."
+        raise ValueError(msg)
 
     return property_cols

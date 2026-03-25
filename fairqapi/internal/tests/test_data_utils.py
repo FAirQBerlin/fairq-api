@@ -118,7 +118,7 @@ def test_transform_raw_data_stations() -> None:
     assert_frame_equal(res, expected_df)
 
 
-def test_transform_raw_data_grid() -> None:  # noqa: WPS210 WPS218
+def test_transform_raw_data_grid() -> None:
     """This test asserts correct output format for /grid endpoint."""
 
     # 1. arrange
@@ -156,7 +156,7 @@ def test_transform_raw_data_grid() -> None:  # noqa: WPS210 WPS218
     assert_frame_equal(res, expected_df)
 
 
-def test_transform_raw_data_streets() -> None:  # noqa: WPS210 WPS218
+def test_transform_raw_data_streets() -> None:
     """This test asserts correct output format for /streets endpoint."""
 
     # 1. arrange
@@ -169,23 +169,13 @@ def test_transform_raw_data_streets() -> None:  # noqa: WPS210 WPS218
             "no2": [[44.6, 45.2, 46.1]],
             "pm10": [[57.5, 61.4, 81.1]],
             "pm25": [[31.8, 31.1, 29.1]],
-            "geometry": [
-                '{"type":"LineString",'
-                '"coordinates":'
-                "[[392123.4,5807250.7],"
-                "[392143.3,5807248.6],"
-                "[392163.2,5807248.3],"
-                "[392214.4,5807253.1]]}"
-            ],
+            "geometry": ['{"type":"LineString","coordinates":[[392123.4,5807250.7],[392143.3,5807248.6],[392163.2,5807248.3],[392214.4,5807253.1]]}'],
         }
     )
 
     expected_df = pd.DataFrame(
         {
-            "geometry": [
-                '{"type":"LineString",'
-                '"coordinates":[[392123.4,5807250.7],[392143.3,5807248.6],[392163.2,5807248.3],[392214.4,5807253.1]]}'
-            ],
+            "geometry": ['{"type":"LineString","coordinates":[[392123.4,5807250.7],[392143.3,5807248.6],[392163.2,5807248.3],[392214.4,5807253.1]]}'],
             "element_nr": ["47420012_47420011.02"],
             "date_time_forecast_iso8601": ["2022-10-30T22:18:00.000000Z"],
             "forecast_range_iso8601": ["R80/2022-10-30T14:00:00.000000Z/PT1H"],

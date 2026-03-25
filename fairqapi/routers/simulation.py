@@ -2,6 +2,7 @@
 
 import logging
 from logging.config import dictConfig
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
@@ -11,16 +12,17 @@ from fairqapi.schemas.request import Request
 from fairqapi.schemas.simulation_response import SimulationResponse
 
 dictConfig(get_logger_config())
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
 
 @router.get("/simulation", response_model=SimulationResponse)
-async def simulation(request: Request = Depends()):
+async def simulation(request: Annotated[Request, Depends()]):
     """Simulation endpoint."""
     simulation_out = {
         "type": "FeatureCollection",
-        "features": cache.simulation["features"][request.skip:(request.skip + request.limit)]
+        "features": cache.simulation["features"][request.skip : (request.skip + request.limit)],
     }
-    logging.info("access simulation")
+    logger.info("access simulation")
     return simulation_out
