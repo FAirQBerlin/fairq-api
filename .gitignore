@@ -6,6 +6,10 @@ __pycache__
 
 # vscode
 .vscode/
+
+# pyenv
+.python-version
+
 # venv
 .venv
 

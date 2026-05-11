@@ -1,17 +1,17 @@
 [tool.poetry]
 name = "fairqapi"
-version = "2026.03.0"
+version = "2026.05.0"
 description = "Future Air Quality API for Predictions."
 authors = ["Sarah Wagner <sarah.wagner@inwt-statistics.de>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">3.14, <4.0"
-fastapi = {extras = ["standard"], version = "^0.135.1"}
+fastapi = {extras = ["standard"], version = ">=0.135.3,<0.137.0"}
 clickhouse-driver = "^0.2.10"
 slowapi = "^0.1.9"
-pytest = "^9.0.2"
-pandas = "^3.0.1"
+pytest = "^9.0.3"
+pandas = "^3.0.2"
 starlette-prometheus = "^0.10.0"
 
 
@@ -29,7 +29,7 @@ bumpver = "^2025.1131"
 
 
 [tool.bumpver]
-current_version = "2026.03.0"
+current_version = "2026.05.0"
 version_pattern = "YYYY.0M.PATCH"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true

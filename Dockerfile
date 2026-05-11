@@ -9,6 +9,9 @@ ENV TZ=Europe/Berlin \
     POETRY_VIRTUALENVS_CREATE=false \
     POETRY_CACHE_DIR=/tmp/poetry_cache
 
+RUN apt-get update && apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/*
+
 # install poetry for package and env management
 RUN pip3 install poetry
 
