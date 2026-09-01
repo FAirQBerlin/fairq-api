@@ -3,9 +3,10 @@
 import asyncio
 from contextlib import asynccontextmanager
 from importlib import resources
+from typing import Any
 
 from fastapi import FastAPI
-from starlette_prometheus import PrometheusMiddleware, metrics
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from fairqapi import __version__
 from fairqapi.cache.cache import cache
@@ -18,7 +19,7 @@ from fairqapi.routers import (
     streets,
 )
 
-background_tasks = set()
+background_tasks: set[asyncio.Task[Any]] = set()
 
 
 @asynccontextmanager
@@ -56,8 +57,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.add_middleware(PrometheusMiddleware)
-app.add_route("/metrics/", metrics)
+Instrumentator().instrument(app).expose(app, endpoint="/metrics/", include_in_schema=False)
 
 app.include_router(health_check.router)
 app.include_router(stations.router)
