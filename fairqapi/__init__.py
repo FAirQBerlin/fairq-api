@@ -6,4 +6,4 @@ FAirQ API serving three endpoints.
 - grid (forecasts in a 50x50m grid in Berlin).
 """
 
-__version__ = "2026.06.0"
+__version__ = "2026.09.0"
