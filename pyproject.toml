@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fairqapi"
-version = "2026.09.1"
+version = "2026.10.0"
 description = "Future Air Quality API for Predictions."
 authors = ["Sarah Wagner <sarah.wagner@inwt-statistics.de>"]
 readme = "README.md"
@@ -30,7 +30,7 @@ httpx2 = "^2.12.0"
 
 
 [tool.bumpver]
-current_version = "2026.09.1"
+current_version = "2026.10.0"
 version_pattern = "YYYY.0M.PATCH"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true
